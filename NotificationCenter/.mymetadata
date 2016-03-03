@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="NotificationCenter"
+  id="myeclipse.1456939833591"
+  context-root="/NotificationCenter"
+  j2ee-spec="5.0"
+  archive="NotificationCenter.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+

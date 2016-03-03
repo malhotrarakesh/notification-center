@@ -3,17 +3,17 @@ package com.gl.notificationcenter.model;
 import java.util.Date;
 
 public class Event {
-	private int id;
+	private String id;
 	private String title;
 	private String description;
 	private Date scheduledOn;
 	private Date lastTill;
 	private Boolean active;
 	
-	public int getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getTitle() {

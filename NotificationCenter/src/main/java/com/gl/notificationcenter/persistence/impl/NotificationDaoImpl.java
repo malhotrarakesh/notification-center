@@ -4,6 +4,8 @@ package com.gl.notificationcenter.persistence.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.bson.Document;
 
 import com.gl.notificationcenter.model.Event;
@@ -18,6 +20,7 @@ import com.mongodb.client.MongoDatabase;
 import static com.gl.notificationcenter.persistence.NotificationPersistenceConstants.*;
 import static com.mongodb.client.model.Filters.*;
 
+@Resource(name = "notificationDao")
 public class NotificationDaoImpl implements NotificationDao {
 	
 	

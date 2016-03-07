@@ -13,7 +13,7 @@ public interface NotificationDao {
 	
 	// Event related CRUD
 	public abstract List<Event> getEvents(List<Event> events);
-	public abstract void createEvent(Event event);
+	public abstract void addEvent(Event event);
 	public abstract void deleteEvent(Event event);
 	public abstract void updateEvent(Event event);
 	

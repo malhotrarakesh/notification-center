@@ -62,7 +62,7 @@ public class NotificationDaoImpl implements NotificationDao {
 		return matchedEvents;
 	}
 
-	public void createEvent(Event event) {
+	public void addEvent(Event event) {
 		MongoCollection<Document> events = mongoDatabase.getCollection(COLLECTION_EVENTS);
 		events.insertOne(Document.parse(new Gson().toJson(event)));
 	}

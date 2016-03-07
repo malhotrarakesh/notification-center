@@ -27,8 +27,8 @@ public class NotificationManager {
 		return notificationDao.getEvents(events);
 	}
 
-	public void createEvent(Event event) {
-		notificationDao.createEvent(event);
+	public void addEvent(Event event) {
+		notificationDao.addEvent(event);
 	}
 
 	public void deleteEvent(Event event) {

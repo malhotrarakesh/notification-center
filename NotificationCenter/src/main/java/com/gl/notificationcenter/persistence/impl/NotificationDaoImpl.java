@@ -1,12 +1,22 @@
 package com.gl.notificationcenter.persistence.impl;
 
 
+import static com.gl.notificationcenter.persistence.NotificationPersistenceConstants.COLLECTION_EVENTS;
+import static com.gl.notificationcenter.persistence.NotificationPersistenceConstants.COLLECTION_SUBSCRIPTIONS;
+import static com.gl.notificationcenter.persistence.NotificationPersistenceConstants.COLLECTION_USERS;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.in;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
+import javax.annotation.PostConstruct;
 
 import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import com.gl.notificationcenter.model.Event;
 import com.gl.notificationcenter.model.SubscriptionInfo;
@@ -16,29 +26,31 @@ import com.google.gson.Gson;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import static com.gl.notificationcenter.persistence.NotificationPersistenceConstants.*;
-import static com.mongodb.client.model.Filters.*;
 
-@Resource(name = "notificationDao")
+@Component("notificationDao")
 public class NotificationDaoImpl implements NotificationDao {
-	
 	
 	private static boolean initialize;
 	private MongoClient mongoClient;
 	private MongoDatabase mongoDatabase;
 	
+	@Autowired
+	private Environment environment;
+	
 	private Object lock = new Object();
 	
-	public NotificationDaoImpl() {
+	@PostConstruct
+	public void initilize(){
 		initializeDatabase();
 	}
 	
 	private void initializeDatabase() {
 		synchronized (lock) {
 			if(!initialize) {
-				mongoClient = new MongoClient(HOST, PORT);
-				mongoDatabase = mongoClient.getDatabase(DATABASE);
+				mongoClient = new MongoClient(environment.getProperty("mongodb.host"), Integer.parseInt(environment.getProperty("mongodb.port")));
+				mongoDatabase = mongoClient.getDatabase(environment.getProperty("mongodb.dbName"));
 				initialize = true;
 			}	
 		}
@@ -94,8 +106,9 @@ public class NotificationDaoImpl implements NotificationDao {
 		}
 		
 		List<User> matchedUsers = new ArrayList<User>();
-		while(iterable.iterator().hasNext()) {
-			matchedUsers.add(new Gson().fromJson(iterable.iterator().next().toJson(), User.class));
+		MongoCursor<Document> iterator = iterable.iterator(); 
+		while(iterator.hasNext()) {
+			matchedUsers.add(new Gson().fromJson(iterator.next().toJson(), User.class));
 		}
 		
 		return matchedUsers;
@@ -149,6 +162,26 @@ public class NotificationDaoImpl implements NotificationDao {
 			ids.add(event.getId());
 		}
 		return ids;
+	}
+
+	public List<SubscriptionInfo> getSubscriptions(User user) {
+		MongoCollection<Document> subscriptions = mongoDatabase.getCollection(COLLECTION_SUBSCRIPTIONS);
+		FindIterable<Document> iterable = subscriptions.find(eq("username", user.getUsername()));
+		
+		MongoCursor<Document> iterator = iterable.iterator();
+		List<SubscriptionInfo> subscriptionList = new ArrayList<SubscriptionInfo>();
+		while (iterator.hasNext()) {
+			Document document = (Document) iterator.next();
+			subscriptionList.add(new Gson().fromJson(document.toJson(), SubscriptionInfo.class));
+		}
+		
+		return subscriptionList;
+	}
+	
+	public void updateSubscription(SubscriptionInfo subscriptionInfo) {
+		MongoCollection<Document> subscriptions = mongoDatabase.getCollection(COLLECTION_SUBSCRIPTIONS);
+		subscriptions.findOneAndUpdate(and(eq("username", subscriptionInfo.getUser().getUsername()), eq("title", subscriptionInfo.getEvent().getTitle())), 
+				Document.parse(new Gson().toJson(subscriptionInfo)));
 	}
 	
 }

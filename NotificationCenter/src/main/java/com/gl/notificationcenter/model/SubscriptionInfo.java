@@ -11,6 +11,7 @@ public class SubscriptionInfo {
 	private User user;
 	private Event event;
 	private List<ChannelInfo> channelInfos;
+	private String subscriptionId;;
 
 	public User getUser() {
 		return user;
@@ -29,6 +30,12 @@ public class SubscriptionInfo {
 	}
 	public void setChannelInfos(List<ChannelInfo> channelInfos) {
 		this.channelInfos = channelInfos;
+	}
+	public String getSubscriptionId() {
+		return subscriptionId;
+	}
+	public void setSubscriptionId(String subscriptionId) {
+		this.subscriptionId = subscriptionId;
 	}
 	
 }

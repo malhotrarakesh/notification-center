@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.gl.notificationcenter.model.Event;
 import com.gl.notificationcenter.model.SubscriptionInfo;
@@ -13,6 +15,7 @@ import com.gl.notificationcenter.persistence.NotificationDao;
 import com.gl.notificationcenter.provider.Provider;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class NotificationManager {
 	
 	@Autowired
@@ -65,7 +68,20 @@ public class NotificationManager {
 	}
 
 	public void unsubscribe(SubscriptionInfo subscriptionInfo) {
-		awsProvider.unsubscribe(subscriptionInfo);
+		List<SubscriptionInfo> subscriptions = notificationDao.getSubscriptions(subscriptionInfo.getUser());
+		for (SubscriptionInfo sub : subscriptions) {
+			if(sub.getEvent().getTitle().equalsIgnoreCase(subscriptionInfo.getEvent().getTitle()) &&
+					sub.getUser().getUsername().equalsIgnoreCase(subscriptionInfo.getUser().getUsername())) {
+				
+				subscriptionInfo.setSubscriptionId(sub.getSubscriptionId());
+				awsProvider.unsubscribe(subscriptionInfo);		
+			}
+		}
+		
 		notificationDao.unsubscribe(subscriptionInfo);
+	}
+	
+	public void updateSubscription() {
+		
 	}
 }

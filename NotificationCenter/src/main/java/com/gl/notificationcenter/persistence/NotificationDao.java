@@ -2,13 +2,10 @@ package com.gl.notificationcenter.persistence;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.gl.notificationcenter.model.Event;
 import com.gl.notificationcenter.model.SubscriptionInfo;
 import com.gl.notificationcenter.model.User;
 
-@Component
 public interface NotificationDao {
 	
 	// Event related CRUD
@@ -28,8 +25,8 @@ public interface NotificationDao {
 	
 	// Subscription 
 	public abstract void subscribe(SubscriptionInfo subscriptionInfo);
-	
-	// Un-subscribe
 	public abstract void unsubscribe(SubscriptionInfo subscriptionInfo);
+	public abstract List<SubscriptionInfo> getSubscriptions(User user);
+	public abstract void updateSubscription(SubscriptionInfo subscriptionIndo);
 	
 }

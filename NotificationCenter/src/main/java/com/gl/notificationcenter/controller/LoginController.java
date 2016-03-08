@@ -19,7 +19,7 @@ public class LoginController {
 	@RequestMapping(path = "/", method = RequestMethod.GET)
 	public ModelAndView welcomePage() {
 		ModelAndView model = new ModelAndView();
-		model.setViewName("login");
+		model.setViewName("index");
 		return model;
 	}
 	

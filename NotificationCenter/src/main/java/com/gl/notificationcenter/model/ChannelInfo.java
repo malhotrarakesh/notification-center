@@ -2,7 +2,7 @@ package com.gl.notificationcenter.model;
 
 public class ChannelInfo {
 	private ChannelTypeEnum channelType;
-	private String channelTypeValue;
+	private String channelValue;
 
 	public ChannelTypeEnum getChannelType() {
 		return channelType;
@@ -10,11 +10,10 @@ public class ChannelInfo {
 	public void setChannelType(ChannelTypeEnum channelType) {
 		this.channelType = channelType;
 	}
-	public String getChannelTypeValue() {
-		return channelTypeValue;
+	public String getChannelValue() {
+		return channelValue;
 	}
-	public void setChannelTypeValue(String channelTypeValue) {
-		this.channelTypeValue = channelTypeValue;
+	public void setChannelValue(String channelValue) {
+		this.channelValue = channelValue;
 	}
-	
 }

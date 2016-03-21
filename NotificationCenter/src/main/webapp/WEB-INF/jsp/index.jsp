@@ -21,6 +21,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-    Welcome to Notification Center!!!<br>
+    Hello Guest, Welcome to Notification Center!!!<br>
   </body>
 </html>

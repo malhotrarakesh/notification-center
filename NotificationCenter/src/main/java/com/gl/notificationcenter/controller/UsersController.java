@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gl.notificationcenter.manager.NotificationManager;
+import com.gl.notificationcenter.model.RoleEnum;
 import com.gl.notificationcenter.model.User;
 
 @Controller
@@ -21,12 +22,20 @@ public class UsersController {
 	
 	@RequestMapping(path = "/addUser", method = RequestMethod.POST)
 	public ModelAndView addUser(@ModelAttribute User user) {
+		// represents a case of User Registration
+		boolean isRegistration = (user.getRoleEnum() == null);
+		if(isRegistration) {
+			user.setRoleEnum(RoleEnum.USER);
+		}
 		notificationManager.addUser(user);
 		
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("usersHome");
-		modelAndView.addObject("users", notificationManager.getUsers(Collections.<User> emptyList()));
+		modelAndView.setViewName("thankYou");
 		
+		if(!isRegistration) {
+			modelAndView.setViewName("adminHome");
+			modelAndView.addObject("users", notificationManager.getUsers(Collections.<User> emptyList()));
+		}
 		return modelAndView;
 	}
 	

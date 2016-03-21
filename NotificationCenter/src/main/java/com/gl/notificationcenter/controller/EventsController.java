@@ -18,11 +18,11 @@ public class EventsController {
 	@Autowired
 	private NotificationManager notificationManager;
 	
-	@RequestMapping(path = "/getEvents", method = RequestMethod.GET)
+	@RequestMapping(path = "/myEvents", method = RequestMethod.GET)
 	public ModelAndView getEvents() {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("events", notificationManager.getEvents(Collections.<Event>emptyList()));
-		modelAndView.setViewName("getEvents");
+		modelAndView.setViewName("myEvents");
 		
 		return modelAndView;
 	}

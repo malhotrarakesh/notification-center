@@ -37,7 +37,9 @@ public class LoginController {
 		
 		boolean isAuthenticated = notificationManager.authenticate(user);
 		if(isAuthenticated)
-			modelAndView.setViewName("myEvents");	
+			modelAndView.setViewName("myEvents");
+		else 
+			modelAndView.addObject("isError", "true");
 			
 		return modelAndView;
 	}

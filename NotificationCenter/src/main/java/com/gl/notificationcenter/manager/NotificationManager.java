@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gl.notificationcenter.model.Event;
+import com.gl.notificationcenter.model.RoleEnum;
 import com.gl.notificationcenter.model.SubscriptionInfo;
 import com.gl.notificationcenter.model.User;
 import com.gl.notificationcenter.persistence.NotificationDao;
@@ -83,5 +84,17 @@ public class NotificationManager {
 	
 	public void updateSubscription() {
 		
+	}
+	
+	public boolean isDuplicateUser(User user) {
+		return notificationDao.isDuplicateUser(user);
+	}
+	
+	public boolean isDuplicateEvent(Event event) {
+		return notificationDao.isDuplicateEvent(event);
+	}
+	
+	public RoleEnum getRole(User user) {
+		return notificationDao.getRole(user);
 	}
 }

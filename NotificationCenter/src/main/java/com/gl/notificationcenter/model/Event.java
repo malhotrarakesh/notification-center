@@ -1,20 +1,17 @@
 package com.gl.notificationcenter.model;
 
-import java.util.Date;
-
 public class Event {
-	private String id;
+	private String name;
 	private String title;
 	private String description;
-	private Date scheduledOn;
-	private Date lastTill;
-	private Boolean active;
+	private String scheduledOn;
+	private String status;
 	
-	public String getId() {
-		return id;
+	public String getName() {
+		return name;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getTitle() {
 		return title;
@@ -28,23 +25,17 @@ public class Event {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Date getScheduledOn() {
+	public String getScheduledOn() {
 		return scheduledOn;
 	}
-	public void setScheduledOn(Date scheduledOn) {
+	public void setScheduledOn(String scheduledOn) {
 		this.scheduledOn = scheduledOn;
 	}
-	public Date getLastTill() {
-		return lastTill;
+	public String getStatus() {
+		return status;
 	}
-	public void setLastTill(Date lastTill) {
-		this.lastTill = lastTill;
+	public void setStatus(String status) {
+		this.status = status;
 	}
-	public Boolean getActive() {
-		return active;
-	}
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
-
+	
 }

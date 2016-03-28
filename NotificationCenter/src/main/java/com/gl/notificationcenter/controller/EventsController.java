@@ -1,6 +1,9 @@
 package com.gl.notificationcenter.controller;
 
+import java.util.Arrays;
 import java.util.Collections;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,39 +21,87 @@ public class EventsController {
 	@Autowired
 	private NotificationManager notificationManager;
 	
-	@RequestMapping(path = "/myEvents", method = RequestMethod.GET)
-	public ModelAndView getEvents() {
+	
+	@RequestMapping(path = "/prepareAddEvent",  method = RequestMethod.GET)
+	public ModelAndView prepareAddEvent() {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("events", notificationManager.getEvents(Collections.<Event>emptyList()));
+		modelAndView.setViewName("addEvent");
+		return modelAndView;
+	}
+	
+	@RequestMapping(path = "/myEvents", method = RequestMethod.GET)
+	public ModelAndView myEvents() {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("events", notificationManager.getEvents(Collections.<Event> emptyList()));
 		modelAndView.setViewName("myEvents");
 		
 		return modelAndView;
 	}
 	
-	@RequestMapping(path = "/addEvent", method = RequestMethod.POST)
-	public ModelAndView addEvent(@ModelAttribute Event event) {
+	@RequestMapping(path = "/getEvents", method = RequestMethod.GET)
+	public ModelAndView getEvents() {
 		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("events", notificationManager.getEvents(Collections.<Event> emptyList()));
 		modelAndView.setViewName("getEvents");
-		notificationManager.addEvent(event);	
 		
 		return modelAndView;
 	}
 	
+	@RequestMapping(path = "/addEvent",  method = RequestMethod.POST)
+	public ModelAndView addEvent(@ModelAttribute Event event) {
+		ModelAndView modelAndView = new ModelAndView();
+		boolean isDuplicate = notificationManager.isDuplicateEvent(event);
+		
+		if(!isDuplicate) {
+			notificationManager.addEvent(event);	
+		}
+			
+		modelAndView.setViewName("getEvents");
+		modelAndView.addObject("events", notificationManager.getEvents(Collections.<Event> emptyList()));
+		if(isDuplicate) {
+			modelAndView.addObject("isDuplicateEvent", isDuplicate);	
+		} else {
+			modelAndView.addObject("isEventAdded", "true");	
+		}
+		
+		return modelAndView;
+	}
+	
+	@RequestMapping(path = "/prepareUpdateEvent",  method = RequestMethod.GET)
+	public ModelAndView getEvent(String name) {
+		Event event = new Event();
+		event.setName(name);
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("editEvent");
+		event = notificationManager.getEvents(Arrays.asList(event)).get(0);
+		modelAndView.addObject("event", event);
+		return modelAndView;
+	}
+
 	
 	@RequestMapping(path = "/updateEvent", method = RequestMethod.POST)
 	public ModelAndView updateEvent(@ModelAttribute Event event) {
 		ModelAndView modelAndView = new ModelAndView();
 		notificationManager.updateEvent(event);
-		modelAndView.setViewName("getEvents");
 		
+		modelAndView.setViewName("getEvents");
+		modelAndView.addObject("events", notificationManager.getEvents(Collections.<Event> emptyList()));
+		modelAndView.addObject("isEventUpdated", "true");
 		return modelAndView;
 	}
 	
 	@RequestMapping(path = "/deleteEvent", method = RequestMethod.POST)
-	public ModelAndView deleteEvent(@ModelAttribute Event event) {
+	public ModelAndView deleteEvent(HttpServletRequest request, String name) {
 		ModelAndView modelAndView = new ModelAndView();
+		
+		Event event = new Event();
+		event.setName(name);
+
 		notificationManager.deleteEvent(event);
+		
 		modelAndView.setViewName("getEvents");
+		modelAndView.addObject("events", notificationManager.getEvents(Collections.<Event> emptyList()));
+		modelAndView.addObject("isEventDeleted", "true");
 		
 		return modelAndView;
 	}

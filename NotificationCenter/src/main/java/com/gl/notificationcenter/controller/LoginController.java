@@ -1,5 +1,9 @@
 package com.gl.notificationcenter.controller;
 
+import java.util.Arrays;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -8,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gl.notificationcenter.manager.NotificationManager;
+import com.gl.notificationcenter.model.RoleEnum;
 import com.gl.notificationcenter.model.User;
 
 @Controller
@@ -31,16 +36,32 @@ public class LoginController {
 	}
 	
 	@RequestMapping(path = "/submit", method = RequestMethod.POST)
-	public ModelAndView loginPage(@ModelAttribute User user) {
+	public ModelAndView loginPage(@ModelAttribute User user, HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("login");
-		
 		boolean isAuthenticated = notificationManager.authenticate(user);
-		if(isAuthenticated)
-			modelAndView.setViewName("myEvents");
-		else 
+		
+		if(isAuthenticated) {
+			User currentUser = notificationManager.getUsers(Arrays.asList(user)).get(0);
+			request.getSession().setAttribute("currentUser", currentUser);
+			RoleEnum roleEnum = notificationManager.getRole(user);
+			if(RoleEnum.ADMIN.equals(roleEnum)) {
+				modelAndView.setViewName("adminHome");
+			} else {
+				modelAndView.setViewName("myEvents");
+			}
+		} else {
+			modelAndView.setViewName("login");
 			modelAndView.addObject("isError", "true");
-			
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(path = "/logoff")
+	public ModelAndView logoff(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("logoff");
+		
+		request.getSession().invalidate();
 		return modelAndView;
 	}
 	
